@@ -6,7 +6,7 @@
 A card-based game selection UI with:
 - **Swipeable card carousel** — drag/swipe or use arrow keys to navigate
 - **Video playback** — click a selected card to play a landscape gameplay preview
-- **Responsive design** — works on desktop and mobile
+- **Responsive design** — works on desktop
 - **Smooth animations** — 3D card transforms, parallax depth, particle effects
 
  **Directory:** `question1/`
