@@ -1,10 +1,4 @@
-/* ============================================
-   FOG — Dynamic Grid Challenge — JS
-   Click-based: click blue to collect, red blinks
-   Moving red blocks, visually rich patterns
-   ============================================ */
 
-// --- State ---
 let rows = 10, cols = 10;
 let currentPattern = 1;
 let baseGrid = [];
@@ -18,9 +12,9 @@ let gameActive = false;
 let pattern1Completed = false;
 let moveTick = 0;
 let moveInterval = null;
-const RED_MOVE_SPEED = 600; // ms between red movements
+const RED_MOVE_SPEED = 600; 
 
-// --- DOM ---
+
 const setupScreen = document.getElementById('setupScreen');
 const gameScreen = document.getElementById('gameScreen');
 const resultModal = document.getElementById('resultModal');
@@ -42,7 +36,7 @@ const rowsInput = document.getElementById('rowsInput');
 const colsInput = document.getElementById('colsInput');
 const gridContainerEl = document.getElementById('gridContainer');
 
-// --- Input Controls ---
+
 document.getElementById('rowsMinus').addEventListener('click', () => {
   rowsInput.value = Math.max(10, parseInt(rowsInput.value) - 1);
 });
@@ -62,7 +56,7 @@ colsInput.addEventListener('change', () => {
   colsInput.value = Math.max(10, Math.min(30, parseInt(colsInput.value) || 10));
 });
 
-// Pattern selector
+
 document.querySelectorAll('.pattern-opt').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.pattern-opt').forEach(b => b.classList.remove('active'));
@@ -71,7 +65,7 @@ document.querySelectorAll('.pattern-opt').forEach(btn => {
   });
 });
 
-// --- Start ---
+
 startBtn.addEventListener('click', () => {
   rows = Math.max(10, Math.min(30, parseInt(rowsInput.value) || 10));
   cols = Math.max(10, Math.min(30, parseInt(colsInput.value) || 10));
@@ -99,9 +93,6 @@ function startGame() {
   startRedMovement();
 }
 
-// =============================================
-// PATTERN GENERATION
-// =============================================
 
 function generateGrid() {
   baseGrid = [];
@@ -124,10 +115,7 @@ function getStaticTile(r, c, pattern) {
   return pattern === 1 ? p1Static(r, c) : p2Static(r, c);
 }
 
-// ---- PATTERN 1: "Diamond Wave" ----
-// Blue tiles in a diamond/zigzag wave, green borders, dark background
 function p1Static(r, c) {
-  // Keep rectangular board with a safe base strip.
   if (r >= rows - 1) return 'green';
   if (r === rows - 2 && c > 0 && c < cols - 1) return 'green';
 
@@ -135,15 +123,12 @@ function p1Static(r, c) {
   const d = Math.abs(c - mid);
   const t = rows > 1 ? r / (rows - 1) : 0;
 
-  // Two mirrored hourglass loops, similar to the reference pattern.
   const centerA = 0.22 + 0.22 * Math.cos(t * Math.PI * 2);
   const centerB = 0.78 + 0.22 * Math.cos(t * Math.PI * 2 + Math.PI);
   const targetA = centerA * mid;
   const targetB = centerB * mid;
-  // Keep track dark so moving red locks can animate on top.
   if (Math.abs(d - targetA) <= 0.65 || Math.abs(d - targetB) <= 0.65) return 'dark';
 
-  // Blue checkpoint locks near loop edges.
   if ((r % 4 === 0 || r % 4 === 1) && (Math.abs(d - (targetA + 1.5)) < 0.55 || Math.abs(d - (targetB + 1.5)) < 0.55)) {
     return 'blue';
   }
@@ -151,10 +136,7 @@ function p1Static(r, c) {
   return 'dark';
 }
 
-// ---- PATTERN 2: "Spiral Rings" ----
-// Concentric rings with blue checkpoints, green center & edges
 function p2Static(r, c) {
-  // Outer green frame like the screenshot.
   if (r <= 0 || r >= rows - 1 || c <= 0 || c >= cols - 1) return 'green';
   if (r === 1 || r === rows - 2 || c === 1 || c === cols - 2) return 'green';
 
@@ -163,10 +145,7 @@ function p2Static(r, c) {
   const dr = Math.abs(r - centerR);
   const dc = Math.abs(c - centerC);
 
-  // Keep center dark so moving red locks can animate on top.
   if (dr <= 1 && dc <= 1) return 'dark';
-
-  // Keep right lane dark so moving red locks can animate on top.
   if (c === cols - 3 && r > 2 && r < rows - 3 && r % 5 < 3) return 'dark';
 
   // Blue accents near borders and center lanes.
@@ -177,7 +156,6 @@ function p2Static(r, c) {
   return 'dark';
 }
 
-// ---- PATTERN 1 RED TILES: Horizontal scrolling blocks ----
 function p1Reds() {
   const reds = [];
   const innerLeft = 1;
@@ -197,13 +175,10 @@ function p1Reds() {
   return reds;
 }
 
-// ---- PATTERN 2 RED TILES: Static center + orbiting outer ----
 function p2Reds() {
   const reds = [];
   const cr = Math.floor(rows / 2);
   const cc = Math.floor(cols / 2);
-
-  // Orbiting center cluster.
   const orbitRadii = [1.5, 2.5];
   orbitRadii.forEach((radius, idx) => {
     const count = idx === 0 ? 6 : 8;
@@ -222,7 +197,7 @@ function p2Reds() {
     }
   });
 
-  // Right-side moving red lane.
+
   const laneC = Math.max(2, cols - 3);
   for (let r = 3; r < rows - 3; r += 3) {
     reds.push({ r, c: laneC, dir: 1, type: 'vertical' });
@@ -234,9 +209,7 @@ function getInitialRedPositions(pattern) {
   return pattern === 1 ? p1Reds() : p2Reds();
 }
 
-// =============================================
-// RED TILE MOVEMENT
-// =============================================
+
 function startRedMovement() {
   clearInterval(moveInterval);
   moveInterval = setInterval(() => {
@@ -273,9 +246,6 @@ function moveRedTiles() {
   });
 }
 
-// =============================================
-// RENDERING
-// =============================================
 function getTileAt(r, c) {
   if (redPositions.some(red => red.r === r && red.c === c)) return 'red';
   return baseGrid[r][c];
@@ -335,16 +305,12 @@ function renderGrid() {
   }
 }
 
-// =============================================
-// CLICK HANDLING (core gameplay)
-// =============================================
 function handleTileClick(r, c) {
   if (!gameActive) return;
 
   const tile = getTileAt(r, c);
 
   if (tile === 'blue') {
-    // ✅ Correct — collect the blue tile
     baseGrid[r][c] = 'dark';
     blueRemaining--;
     scoreValueEl.textContent = blueRemaining;
@@ -362,9 +328,7 @@ function handleTileClick(r, c) {
     }
 
   } else if (tile === 'red') {
-    // ❌ Wrong — blink white/red, lose a life
     lives--;
-
     const cell = document.getElementById(`cell-${r}-${c}`);
     if (cell) {
       cell.classList.add('blink');
@@ -376,12 +340,8 @@ function handleTileClick(r, c) {
       handleLose('All lives lost!');
     }
   }
-  // green & dark = nothing happens
 }
 
-// =============================================
-// TIMER
-// =============================================
 function startTimer() {
   clearInterval(timerInterval);
   timerInterval = setInterval(() => {
@@ -394,9 +354,7 @@ function startTimer() {
   }, 1000);
 }
 
-// =============================================
-// HUD
-// =============================================
+
 function updateHUD() {
   timerValueEl.textContent = timeLeft;
   timerValueEl.classList.remove('urgent');
@@ -425,9 +383,7 @@ function updateHearts() {
   });
 }
 
-// =============================================
-// WIN / LOSE
-// =============================================
+
 function handleWin() {
   gameActive = false;
   clearInterval(timerInterval);

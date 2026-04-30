@@ -9,7 +9,7 @@ A card-based game selection UI with:
 - **Responsive design** — works on desktop and mobile
 - **Smooth animations** — 3D card transforms, parallax depth, particle effects
 
-📁 **Directory:** `question1/`
+ **Directory:** `question1/`
 
 ### Question 2: Dynamic Grid Challenge
 A tile-based grid game with:
@@ -19,27 +19,21 @@ A tile-based grid game with:
   - 🔵 Blue = collect for points
   - 🔴 Red = danger (blink animation, lose 1 life)
   - 🟢 Green = safe zone
-  - 🟡 Yellow = player position
 - **5 lives** and **30-second timer**
 - **Auto-transition** from Pattern 1 → Pattern 2 on completion
 - **Win/Lose screens** with stats
 - **Multiple input methods:** keyboard (WASD/arrows), click, swipe
 
-📁 **Directory:** `question2/`
+ **Directory:** `question2/`
 
 ## Live Demo
-🔗 [Live URL](#) *(replace with deployed URL)*
+Live URL for question 1: http://localhost:3000/question1/
+Live URL for question 2: http://localhost:3000/question2/
 
 ## Tech Stack
 - HTML5, CSS3, Vanilla JavaScript
 - Canvas API for video generation
 - No dependencies or build tools required
 
-## How to Run Locally
-Simply open `index.html` in a browser, or use a local server:
-```bash
-npx serve .
-```
 
-## Author
-FOG SDE Intern Assessment Submission
+

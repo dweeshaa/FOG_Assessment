@@ -1,9 +1,3 @@
-/* ============================================
-   FOG — Game Selection Interface — JS
-   Card carousel with swipe + video playback
-   ============================================ */
-
-// --- Game Data (using actual FOG card assets) ---
 const GAMES = [
   {
     id: 1,
@@ -49,7 +43,7 @@ let dragStartX = 0;
 let dragDelta = 0;
 let wasDragging = false;
 
-// --- DOM ---
+
 const track = document.getElementById('carouselTrack');
 const carouselContainer = document.getElementById('carouselContainer');
 const dotsContainer = document.getElementById('carouselDots');
@@ -70,7 +64,6 @@ const videoTimeEl = document.getElementById('videoTime');
 const videoPauseBtn = document.getElementById('videoPauseBtn');
 const bgParticles = document.getElementById('bgParticles');
 
-// --- Create Cards (using actual image assets) ---
 function createCards() {
   track.innerHTML = '';
   GAMES.forEach((game, i) => {
@@ -95,7 +88,6 @@ function createCards() {
     playIcon.addEventListener('click', (e) => {
       e.stopPropagation();
       if (i !== currentIndex) goTo(i);
-      // Keep triangle behavior identical to "Play Now"
       openVideo(GAMES[i]);
     });
     card.addEventListener('click', () => handleCardClick(i));
@@ -103,7 +95,6 @@ function createCards() {
   });
 }
 
-// --- Create Dots ---
 function createDots() {
   dotsContainer.innerHTML = '';
   GAMES.forEach((_, i) => {
@@ -114,8 +105,8 @@ function createDots() {
   });
 }
 
-// --- Position Cards ---
-const CARD_GAP = 240; // spacing between card centers
+
+const CARD_GAP = 240; 
 
 function positionCards(dragOffset = 0) {
   const cards = track.querySelectorAll('.game-card');
@@ -123,7 +114,6 @@ function positionCards(dragOffset = 0) {
     const offset = i - currentIndex;
     const absOffset = Math.abs(offset);
 
-    // Calculate the fractional offset from drag
     const fractionalShift = dragOffset / CARD_GAP;
     const effectiveOffset = offset + fractionalShift * -1;
     const absEffective = Math.abs(effectiveOffset);
@@ -137,14 +127,12 @@ function positionCards(dragOffset = 0) {
     scale = Math.max(scale, 0.5);
     opacity = Math.max(opacity, 0);
 
-    // Cards follow the drag 1:1
     const translateX = offset * CARD_GAP + dragOffset;
 
     card.style.transform = `translateX(${translateX}px) translateZ(${z}px) scale(${scale}) rotateY(${rotateY}deg)`;
     card.style.opacity = opacity;
     card.style.zIndex = 100 - Math.round(absEffective * 10);
 
-    // Active class for styling
     if (absEffective < 0.5) {
       card.classList.add('active');
     } else {
@@ -153,15 +141,15 @@ function positionCards(dragOffset = 0) {
   });
 }
 
-// --- Update Info ---
+
 function updateInfo() {
   const game = GAMES[currentIndex];
   const panel = document.getElementById('gameInfoPanel');
 
-  // Re-trigger animation
+ 
   const content = panel.querySelector('.game-info-content');
   content.style.animation = 'none';
-  content.offsetHeight; // trigger reflow
+  content.offsetHeight; 
   content.style.animation = '';
 
   gameTag.textContent = game.tag;
@@ -170,7 +158,6 @@ function updateInfo() {
   gameDesc.textContent = game.desc;
 }
 
-// --- Go to card ---
 function goTo(index) {
   currentIndex = Math.max(0, Math.min(GAMES.length - 1, index));
   positionCards();
@@ -183,7 +170,6 @@ function updateDots() {
   dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
 }
 
-// --- Card Click ---
 function handleCardClick(index) {
   if (wasDragging) {
     wasDragging = false;
@@ -193,7 +179,6 @@ function handleCardClick(index) {
   openVideo(GAMES[index]);
 }
 
-// Fallback delegated click handling so card/triangle always works
 track.addEventListener('click', (e) => {
   const card = e.target.closest('.game-card');
   if (!card) return;
@@ -204,11 +189,11 @@ track.addEventListener('click', (e) => {
   openVideo(GAMES[index]);
 });
 
-// --- Navigation ---
+
 prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
 nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
 
-// Keyboard
+
 document.addEventListener('keydown', (e) => {
   if (videoModal.classList.contains('open')) {
     if (e.key === 'Escape') closeVideo();
@@ -219,8 +204,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') openVideo(GAMES[currentIndex]);
 });
 
-// --- Mobile-Style Swipe/Drag System ---
-// Tracks velocity for flick gestures and provides smooth card-following
+
 let lastPointerX = 0;
 let lastPointerTime = 0;
 let velocity = 0;
@@ -228,7 +212,6 @@ let animatingSnap = false;
 
 function onPointerDown(e) {
   if (e.target.closest('.card-play-icon')) return;
-  // Stop any ongoing snap animation
   animatingSnap = false;
 
   isDragging = true;
@@ -239,7 +222,6 @@ function onPointerDown(e) {
   dragDelta = 0;
   velocity = 0;
 
-  // Disable CSS transitions during drag for instant response
   track.querySelectorAll('.game-card').forEach(c => {
     c.style.transition = 'none';
   });
@@ -256,46 +238,35 @@ function onPointerMove(e) {
 
   dragDelta = e.clientX - dragStartX;
 
-  // Track velocity (pixels per millisecond)
   if (dt > 0) {
     const instantVelocity = (e.clientX - lastPointerX) / dt;
-    velocity = velocity * 0.6 + instantVelocity * 0.4; // smoothed
+    velocity = velocity * 0.6 + instantVelocity * 0.4;
   }
 
   lastPointerX = e.clientX;
   lastPointerTime = now;
 
-  // Mark as dragging if moved more than 5px (to distinguish from clicks)
   if (Math.abs(dragDelta) > 5) wasDragging = true;
-
-  // Cards follow the finger/mouse in real-time
   positionCards(dragDelta);
 }
 
 function onPointerUp() {
   if (!isDragging) return;
   isDragging = false;
-
-  // Re-enable CSS transitions for smooth snap
   track.querySelectorAll('.game-card').forEach(c => {
     c.style.transition = '';
   });
 
-  // Determine navigation based on distance OR velocity (flick gesture)
-  const distanceThreshold = 40;  // px — how far you need to drag
-  const velocityThreshold = 0.3; // px/ms — how fast you need to flick
+  const distanceThreshold = 40;  
+  const velocityThreshold = 0.3;
 
   let targetIndex = currentIndex;
 
   if (dragDelta < -distanceThreshold || velocity < -velocityThreshold) {
-    // Swiped left → go next
     targetIndex = Math.min(GAMES.length - 1, currentIndex + 1);
   } else if (dragDelta > distanceThreshold || velocity > velocityThreshold) {
-    // Swiped right → go prev
     targetIndex = Math.max(0, currentIndex - 1);
   }
-
-  // Animate snap to target
   animateSnapTo(targetIndex, dragDelta);
   dragDelta = 0;
   velocity = 0;
@@ -326,14 +297,9 @@ track.addEventListener('pointercancel', () => {
   goTo(currentIndex);
 });
 
-// Prevent default touch behavior so swipe works smoothly on mobile
 track.addEventListener('touchstart', (e) => {
-  // Allow vertical scroll, prevent horizontal default
-  // The pointerdown handler already manages the swipe
 }, { passive: true });
 
-// --- Smooth Snap Animation ---
-// Animates from the current drag offset to the target card position
 function animateSnapTo(targetIndex, fromOffset) {
   animatingSnap = true;
   currentIndex = targetIndex;
@@ -341,7 +307,7 @@ function animateSnapTo(targetIndex, fromOffset) {
   updateInfo();
 
   const startTime = performance.now();
-  const duration = 300; // ms
+  const duration = 300; 
   const startOffset = fromOffset;
 
   function tick(now) {
@@ -353,7 +319,6 @@ function animateSnapTo(targetIndex, fromOffset) {
       animatingSnap = false;
     }
 
-    // Ease-out cubic for natural deceleration
     const eased = 1 - Math.pow(1 - progress, 3);
     const currentOffset = startOffset * (1 - eased);
 
@@ -367,11 +332,11 @@ function animateSnapTo(targetIndex, fromOffset) {
   requestAnimationFrame(tick);
 }
 
-// --- Video Modal ---
+
 let videoAnimFrame = null;
 let videoStartTime = 0;
 let videoPaused = false;
-const VIDEO_DURATION = 30; // seconds
+const VIDEO_DURATION = 30; 
 
 function openVideo(game) {
   videoModal.classList.add('open');
@@ -396,7 +361,6 @@ function renderVideoFrame(game) {
   const w = videoCanvas.width;
   const h = videoCanvas.height;
 
-  // Load the card image to use in the video
   const cardImg = new Image();
   cardImg.src = game.image;
 
@@ -415,11 +379,8 @@ function renderVideoFrame(game) {
     if (elapsed > VIDEO_DURATION) return;
 
     const t = elapsed / VIDEO_DURATION;
-
-    // Parse accent color for theming
     const accent = game.accent || '#7c3aed';
 
-    // Animated gradient background
     const hue1 = (elapsed * 15) % 360;
     const hue2 = (hue1 + 45) % 360;
     const grad = ctx.createLinearGradient(0, 0, w, h);
@@ -429,7 +390,6 @@ function renderVideoFrame(game) {
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
 
-    // Animated grid
     ctx.strokeStyle = 'rgba(255,255,255,0.03)';
     ctx.lineWidth = 1;
     const gridSize = 60;
@@ -441,7 +401,6 @@ function renderVideoFrame(game) {
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
     }
 
-    // Floating orbs matching game accent
     for (let i = 0; i < 6; i++) {
       const ox = w * 0.5 + Math.sin(elapsed * 0.4 + i * 1.1) * w * 0.35;
       const oy = h * 0.5 + Math.cos(elapsed * 0.6 + i * 1.5) * h * 0.3;
@@ -453,7 +412,6 @@ function renderVideoFrame(game) {
       ctx.beginPath(); ctx.arc(ox, oy, r, 0, Math.PI * 2); ctx.fill();
     }
 
-    // Draw card image in center (with bobbing animation)
     if (cardImg.complete && cardImg.naturalWidth > 0) {
       const imgW = 480;
       const imgH = imgW * (cardImg.naturalHeight / cardImg.naturalWidth);
@@ -461,26 +419,22 @@ function renderVideoFrame(game) {
       const imgY = (h - imgH) / 2 + Math.sin(elapsed * 1.5) * 8 - 30;
 
       ctx.save();
-      // Glow behind card
       ctx.shadowColor = accent;
       ctx.shadowBlur = 40;
       ctx.drawImage(cardImg, imgX, imgY, imgW, imgH);
       ctx.restore();
     }
 
-    // Game name overlay
     ctx.fillStyle = 'rgba(255,255,255,0.9)';
     ctx.font = 'bold 32px Outfit, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(game.name, w / 2, h - 80);
 
-    // "Gameplay Preview" subtitle
     ctx.fillStyle = 'rgba(255,255,255,0.35)';
     ctx.font = '14px Outfit, sans-serif';
     ctx.fillText('Gameplay Preview — ' + game.tag, w / 2, h - 50);
 
-    // Progress bar & time
     videoProgressFill.style.width = (t * 100) + '%';
     const mins = Math.floor(elapsed / 60);
     const secs = Math.floor(elapsed % 60);
@@ -510,7 +464,6 @@ videoPauseBtn.addEventListener('click', () => {
 
 playBtn.addEventListener('click', () => openVideo(GAMES[currentIndex]));
 
-// --- Particles ---
 function createParticles() {
   for (let i = 0; i < 30; i++) {
     const p = document.createElement('div');
@@ -525,7 +478,6 @@ function createParticles() {
   }
 }
 
-// --- Init ---
 function init() {
   createCards();
   createDots();

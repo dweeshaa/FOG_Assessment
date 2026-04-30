@@ -11,25 +11,22 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Animated background -->
+ 
   <div class="bg-particles" id="bgParticles"></div>
   <div class="bg-gradient"></div>
 
-  <!-- Main Content -->
   <main class="main">
     <div class="section-title">
       <h1>Select Your Game</h1>
       <p class="subtitle">Swipe or use arrows to browse • Click a card to play</p>
     </div>
 
-    <!-- Card Carousel -->
     <div class="carousel-container" id="carouselContainer">
       <button class="nav-arrow nav-prev" id="navPrev" aria-label="Previous game">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
 
       <div class="carousel-track" id="carouselTrack">
-        <!-- Cards will be injected by JS -->
       </div>
 
       <button class="nav-arrow nav-next" id="navNext" aria-label="Next game">
@@ -37,10 +34,8 @@
       </button>
     </div>
 
-    <!-- Dots Indicator -->
     <div class="carousel-dots" id="carouselDots"></div>
 
-    <!-- Game Info Panel -->
     <div class="game-info-panel" id="gameInfoPanel">
       <div class="game-info-content">
         <span class="game-tag" id="gameTag">ACTION</span>
@@ -54,7 +49,6 @@
     </div>
   </main>
 
-  <!-- Video Modal -->
   <div class="video-modal" id="videoModal">
     <div class="video-modal-backdrop" id="videoModalBackdrop"></div>
     <div class="video-modal-content" id="videoModalContent">
