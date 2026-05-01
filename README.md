@@ -6,10 +6,9 @@
 A card-based game selection UI with:
 - **Swipeable card carousel** — drag/swipe or use arrow keys to navigate
 - **Video playback** — click a selected card to play a landscape gameplay preview
-- **Responsive design** — works on desktop
+- **Responsive design** — works on desktop  and mobile
 - **Smooth animations** — 3D card transforms, parallax depth, particle effects
 
- **Directory:** `question1/`
 
 ### Question 2: Dynamic Grid Challenge
 A tile-based grid game with:
@@ -24,11 +23,10 @@ A tile-based grid game with:
 - **Win/Lose screens** with stats
 - **Multiple input methods:** keyboard (WASD/arrows), click, swipe
 
- **Directory:** `question2/`
 
 ## Live Demo
-Live URL for question 1: http://localhost:3000/question1/
-Live URL for question 2: http://localhost:3000/question2/
+Live URL for question 1: https://fog-assessment-five.vercel.app/question1/index.html
+Live URL for question 2: https://fog-assessment-five.vercel.app/question2/index.html
 
 ## Tech Stack
 - HTML5, CSS3, Vanilla JavaScript
